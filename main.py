@@ -49,6 +49,7 @@ if __name__ == "__main__":
     # Create the output folder if it doesn't exist
     import os
     os.makedirs(output_folder_path, exist_ok=True)
+    os.makedirs(output_unpaper, exist_ok=True)
 
     # Convert PDF to PPM with higher DPI for better quality
     pdf_to_ppm(input_pdf_file, output_folder_path, dpi=300)
