@@ -38,7 +38,41 @@ def run_unpaper(input_folder, output_folder):
     ]
 
     # Run the unpaper command
-    subprocess.run(unpaper_command)
+    process = subprocess.run(unpaper_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Check for errors
+    if process.returncode != 0:
+        print(f"Error executing unpaper command: {process.stderr.decode()}")
+    else:
+        print("Unpaper command executed successfully.")
+
+def run_tesseract(output_unpaper):
+    tesseract_command = [ 
+        "tesseract",
+         f"{output_unpaper}/sorted_files.txt",
+        "../output-prefix pdf"
+    ]
+
+    subprocess.run(tesseract_command)
+
+def create_sorted_text_file(output_folder):
+    # Get a list of all the files in the output folder
+    file_list = os.listdir(output_folder)
+
+    # Sort the file list alphabetically
+    sorted_file_list = sorted(file_list)
+
+    # Create a new text file to store the sorted file names
+    output_file_path = f"{output_folder}/sorted_files.txt"
+    with open(output_file_path, "w") as output_file:
+        # Write each file name to the text file
+        for file_name in sorted_file_list:
+            output_file.write(f"{output_folder}/{file_name}\n")Z
+
+    print(f"Sorted file list saved as {output_file_path}")
+
+# Call the function to create the sorted text file
+
 
 if __name__ == "__main__":
     # Provide the input PDF file and output folder
@@ -56,3 +90,5 @@ if __name__ == "__main__":
 
     # Run unpaper on the generated PPM files
     run_unpaper(output_folder_path, output_unpaper)
+    create_sorted_text_file(output_unpaper)
+    run_tesseract(output_unpaper)
