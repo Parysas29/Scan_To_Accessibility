@@ -26,6 +26,23 @@ def pdf_to_ppm(input_pdf, output_folder, dpi=300):
     # Close the PDF file
     pdf_document.close()
 
+def run_img2pdf(input_folder, output_pdf):
+    # Construct the img2pdf command
+    img2pdf_command = [
+        "img2pdf",
+        f"{input_folder}/*.ppm",
+        "-o", f"{output_pdf}/out.pdf"
+    ]
+
+    # Run the img2pdf command
+    process = subprocess.run(img2pdf_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Check for errors
+    if process.returncode != 0:
+        print(f"Error executing img2pdf command: {process.stderr.decode()}")
+    else:
+        print(f"PDF saved as {output_pdf}")
+
 def run_unpaper(input_folder, output_folder):
     # Construct the unpaper command
     unpaper_command = [
@@ -67,7 +84,7 @@ def create_sorted_text_file(output_folder):
     with open(output_file_path, "w") as output_file:
         # Write each file name to the text file
         for file_name in sorted_file_list:
-            output_file.write(f"{output_folder}/{file_name}\n")Z
+            output_file.write(f"{output_folder}/{file_name}\n")
 
     print(f"Sorted file list saved as {output_file_path}")
 
@@ -90,5 +107,6 @@ if __name__ == "__main__":
 
     # Run unpaper on the generated PPM files
     run_unpaper(output_folder_path, output_unpaper)
-    create_sorted_text_file(output_unpaper)
-    run_tesseract(output_unpaper)
+    run_img2pdf(output_unpaper, output_unpaper)
+    #create_sorted_text_file(output_unpaper)
+    #run_tesseract(output_unpaper)
