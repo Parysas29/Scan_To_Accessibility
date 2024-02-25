@@ -2,7 +2,7 @@ import fitz  # PyMuPDF
 from PIL import Image
 import subprocess
 
-def pdf_to_ppm(input_pdf, output_folder, dpi=300):
+def pdf_to_ppm(input_pdf, output_folder, dpi):
     # Open the PDF file
     pdf_document = fitz.open(input_pdf)
 
@@ -50,6 +50,8 @@ def run_unpaper(input_folder, output_folder):
         "--layout", "double",
         "--input-pages", "1",
         "--output-pages", "2",
+        "--no-blackfilter",
+        "--deskew-scan-direction", "left",
         f"{input_folder}/page_%d.ppm",
         f"{output_folder}/output%03d.ppm"
     ]
