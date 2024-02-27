@@ -2,7 +2,24 @@ import fitz  # PyMuPDF
 from PIL import Image
 import subprocess
 
+
+def get_pdf_dimensions(pdf_path):
+    # Open the PDF file
+    pdf_document = fitz.open(pdf_path)
+
+    # Get the size of the first page
+    first_page = pdf_document[0]
+    width, height = first_page.rect.width, first_page.rect.height
+
+    # Close the PDF file
+    pdf_document.close()
+
+    return width, height
+
+
 def pdf_to_ppm(input_pdf, output_folder, dpi):
+    # Get the dimensions of the original PDF
+    original_width, original_height = get_pdf_dimensions(input_pdf)
     # Open the PDF file
     pdf_document = fitz.open(input_pdf)
 
@@ -43,27 +60,27 @@ def run_img2pdf(input_folder, output_pdf):
     else:
         print(f"PDF saved as {output_pdf}")
 
+import subprocess
+from pathlib import Path
+
 def run_unpaper(input_folder, output_folder):
-    # Construct the unpaper command
     unpaper_command = [
         "unpaper",
-        "--layout", "double",
-        "--input-pages", "1",
-        "--output-pages", "2",
-        "--no-blackfilter",
-        "--deskew-scan-direction", "left",
-        f"{input_folder}/page_%d.ppm",
-        f"{output_folder}/output%03d.ppm"
+        "--layout", "double",  # Adjust layout based on your document (single/double)
+        "--input-pages", "1",   # Number of pages per input image (adjust if needed)
+        "--output-pages", "2",  # Number of pages per output image
+        "--no-blackfilter",  # Keep this for text preservation
+        str(Path(input_folder) / "page_%d.ppm"),
+        str(Path(output_folder) / "output%03d.ppm")
     ]
 
-    # Run the unpaper command
     process = subprocess.run(unpaper_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    # Check for errors
     if process.returncode != 0:
         print(f"Error executing unpaper command: {process.stderr.decode()}")
     else:
         print("Unpaper command executed successfully.")
+
 
 def run_tesseract(output_unpaper):
     tesseract_command = [ 
