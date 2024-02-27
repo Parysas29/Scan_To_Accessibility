@@ -112,12 +112,7 @@ def create_sorted_text_file(output_folder):
 # Call the function to create the sorted text file
 
 
-if __name__ == "__main__":
-    # Provide the input PDF file and output folder
-    input_pdf_file = "../input.pdf"
-    output_folder_path = "../output_high_quality_ppm_files"
-    output_unpaper = "../output_unpaper_files"
-
+def main_ocr(input_pdf_file, output_folder_path, output_unpaper):
     # Create the output folder if it doesn't exist
     import os
     os.makedirs(output_folder_path, exist_ok=True)
@@ -133,3 +128,6 @@ if __name__ == "__main__":
 
     #create_sorted_text_file(output_unpaper)
     #run_tesseract(output_unpaper)
+
+if __name__ == "__main__":
+    main_ocr("../input.pdf", "../output", "../output_unpaper")
